@@ -1,1 +1,1 @@
-from account_service import database, variables, procedures, hooks
+from account_service import variables, database, app
