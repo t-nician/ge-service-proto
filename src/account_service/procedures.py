@@ -15,13 +15,12 @@ async def __add_primary_account_to_database(primary_account: PrimaryAccount):
 
 
 async def __get_primary_account_from_database(
-    platform_account_type: PlatformAccountType, 
-    account_id: str | int
-) -> PrimaryAccount:
-    result = available_accounts.get((platform_account_type, account_id))
+    platform_account_type: PlatformAccountType, account_id: str | int
+) -> PrimaryAccount | dict:
+    primary_account = available_accounts.get((platform_account_type, account_id))
     
-    if result:
-        return result
+    if primary_account:
+        return primary_account
     else:
         for primary_account in available_accounts.values():
             for platform_account in primary_account.platform_accounts:
@@ -32,19 +31,18 @@ async def __get_primary_account_from_database(
     return PROC_ACC_DOES_NOT_EXIST_MSG
 
 
-
 async def create_primary_account(
     primary_account: PrimaryAccount
-) -> PrimaryAccount | dict:
-    # NOTE primary_account.clone/copy or-
-    # something can't be returning what was passed.
+) -> PrimaryAccount | dict:    
+    primary_account_type = primary_account.authority_account.account_type
+    primary_account_id = primary_account.authority_account.account_id
     
-    account_key = (
-        primary_account.authority_account.account_type,
-        primary_account.authority_account.account_id
-    )
+    existing_primary_account = await get_primary_account(
+        platform_account_type=primary_account_type,
+        account_id=primary_account_id
+    ) 
     
-    if not available_accounts.get(account_key):
+    if not existing_primary_account:
         for platform_account in primary_account.platform_accounts:
             result_type = type(
                 await get_primary_account(
@@ -54,15 +52,15 @@ async def create_primary_account(
             )
             
             if result_type is PrimaryAccount:
-                return PROC_CREATE_ACC_ALREADY_EXISTS_MSG
+                return PROC_CREATE_ACC_FAILURE_PLATFORM_ACC_TAKEN
         
         await __add_primary_account_to_database(
             primary_account=primary_account
         )
 
         return await get_primary_account(
-            platform_account_type=account_key[0],
-            account_id=account_key[1]
+            platform_account_type=primary_account_type,
+            account_id=primary_account_id
         )
     else:
         return PROC_CREATE_ACC_ALREADY_EXISTS_MSG
