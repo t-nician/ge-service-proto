@@ -1,0 +1,5 @@
+json5
+peewee
+fastapi
+uvicorn
+pydantic
