@@ -1,47 +1,41 @@
 import fastapi
 import asyncio
 
+from account_service.database import *
+from account_service.procedures import *
 
-from account_service.objects import *
-from account_service.procedures import (
-    create_primary_account, 
-    get_primary_account,
-)
+
+load_tables_to_database()
 
 
 async def main():
-    ref_primary_account = PrimaryAccount(
-        authority_account=DiscordAccount(
-            account_id=100,
-            account_name="discord"
-        ),
-        
-        platform_accounts=[
-            MordhauAccount(
-                account_id="playfab",
-                account_name="mordhau"
-            )
-        ]
-    )
+    primary_account = await get_primary_account(
+        "playfab_id",
+        account_type=PlatformAccountType.MORDHAU_ACCOUNT
+    ) 
     
-    create_result: PrimaryAccount | dict = await create_primary_account(
-        primary_account=ref_primary_account
-    )
+    #if primary_account is None:
+    #    primary_account = await create_primary_account(
+    #        "hello_id",
+    #        PlatformAccountType.DISCORD_ACCOUNT
+    #    )
     
-    get_result: PrimaryAccount | dict = await get_primary_account(
-        platform_account_type=PlatformAccountType.DISCORD_ACCOUNT,
-        account_id=100
-    )
+    #mordhau_account = await create_platform_account(
+    #    "playfab_id",
+    #    PlatformAccountType.MORDHAU_ACCOUNT,
+    #    primary_account
+    #)
     
-    get_platform_result: PrimaryAccount | dict = await get_primary_account(
-        platform_account_type=PlatformAccountType.MORDHAU_ACCOUNT,
-        account_id="playfab"
-    )
+    #print(mordhau_account)
     
-    print("create account", create_result)
-    print("get account by primary", get_result)
-    print("get account by platform", get_platform_result)
+    print(primary_account)
     
+    # new_primary_account = PeeweePrimaryAccount.create(
+    #    authority_account_id="hello_id",
+    #    authority_account_type=PlatformAccountType.DISCORD_ACCOUNT
+    #)
     
+    #database_connection.commit()
+
 
 asyncio.run(main())

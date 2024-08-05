@@ -1,1 +1,0 @@
-from account_service.objects.accounts import *
