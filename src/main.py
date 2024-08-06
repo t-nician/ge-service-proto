@@ -1,33 +1,44 @@
-import asyncio
 import uvicorn
+import fastapi
+import multiprocessing
 
-from account_service.database import *
-from account_service.app import *
+import account_service
+import moderation_service
 
 
-async def pre_launch():
-    #primary_account = await create_primary_account(
-    #    account_id="discord_id",
-    #    account_type=PlatformAccountType.DISCORD_ACCOUNT
-    #)
+from shared import api_objects, variables
+
+
+def launch_account_service():
+    web_api_app = fastapi.FastAPI()
     
-    #await create_platform_account(
-    #    primary_account,
-    #    account_id="playfab_id",
-    #    account_name="mordhau_name",
-    #    account_type=PlatformAccountType.MORDHAU_ACCOUNT
-    #)
-    pass
+    account_service.database.load_tables_to_database()
+    account_service.app.load_service_endpoints(web_api_app)
     
+    uvicorn.run(web_api_app, host="127.0.0.1", port=5000)
+
+def launch_moderation_service():
+    web_api_app = fastapi.FastAPI()
+    
+    moderation_service.database.load_tables_to_database()
+    moderation_service.app.load_service_endpoints(web_api_app)
+    
+    uvicorn.run(web_api_app, host="127.0.0.1", port=5001)
 
 
-app = FastAPI()
-
-load_tables_to_database()
-hook_api_endpoints(app)
-
-asyncio.run(pre_launch())
-uvicorn.run(app, host="127.0.0.1", port=5000)
+if __name__ == "__main__":
+    account_service_process = multiprocessing.Process(
+        target=launch_account_service,
+    )
+    
+    moderation_service_process = multiprocessing.Process(
+        target=launch_moderation_service,
+    )
+    
+    account_service_process.start()
+    moderation_service_process.start()
+    
+    account_service_process.join()
     
     #primary_account = await get_primary_account(
     #    "playfab_id",

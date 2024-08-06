@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-from account_service.variables import *
+from shared.variables import *
 
 
 class PrimaryAccountObject(BaseModel):

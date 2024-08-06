@@ -1,1 +1,1 @@
-from account_service import variables, database, app
+from account_service import database, app

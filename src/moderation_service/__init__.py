@@ -1,0 +1,1 @@
+from moderation_service import database, app

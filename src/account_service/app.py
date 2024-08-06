@@ -1,10 +1,10 @@
-from typing import Union
 from fastapi import FastAPI
-from playhouse.shortcuts import model_to_dict, dict_to_model
 
-from account_service.objects import *
+from shared.api_objects import *
+from shared.variables import *
+
 from account_service.database import *
-from account_service.variables import *
+
 
 async def account_type_to_api_model(
     account_type: PlatformAccountType
@@ -106,30 +106,30 @@ async def api_get_platform_account(
     )
 
 
-def hook_api_endpoints(app: FastAPI):
+def load_service_endpoints(app: FastAPI):
     app.add_api_route(
-        "/account-service/create-primary-account",
+        "/account-service/primary-account",
         response_model=PrimaryAccountObject,
         endpoint=api_create_primary_account,
         methods=["POST"]
     )
     
     app.add_api_route(
-        "/account-service/create-platform-account",
-        response_model=DiscordAccountObject | MordhauAccountObject,
-        endpoint=api_create_platform_account,
-        methods=["POST"]
-    )
-    
-    app.add_api_route(
-        "/account-service/get-primary-account-by",
+        "/account-service/primary-account",
         response_model=PrimaryAccountObject,
         endpoint=api_get_primary_account,
         methods=["GET"]
     )
     
     app.add_api_route(
-        "/account-service/get-platform-account-by",
+        "/account-service/platform-account",
+        response_model=DiscordAccountObject | MordhauAccountObject,
+        endpoint=api_create_platform_account,
+        methods=["POST"]
+    )
+    
+    app.add_api_route(
+        "/account-service/platform-account",
         response_model=DiscordAccountObject | MordhauAccountObject,
         endpoint=api_get_platform_account,
         methods=["GET"]

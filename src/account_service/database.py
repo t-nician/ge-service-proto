@@ -4,66 +4,13 @@ from peewee import (
     DoesNotExist
 )
 
-from account_service.variables import *
+from shared.variables import *
+from shared.database_objects import *
 
 
-database_connection = SqliteDatabase(DB_SQLITE_PATH)
-database_connection.connect()
-
-
-class AccountTypeField(Field):
-    field_type=DB_ACCOUNT_TYPE_FIELD_NAME
-    
-    def db_value(self, value: PlatformAccountType) -> str:
-        return value.value
-    
-    def python_value(self, value: str) -> PlatformAccountType:
-        return PlatformAccountType(value)
-
-
-class PeeweeBaseModel(Model):
-    class Meta:
-        database = database_connection
-
-
-class PeeweePrimaryAccount(PeeweeBaseModel):
-    authority_account_id = TextField(primary_key=True)
-    authority_account_type = AccountTypeField()
-    
-    class Meta:
-        table_name = DB_PRIMARY_ACCOUNT_TABLE_NAME
-
-    
-class PeeweeDiscordAccount(PeeweeBaseModel):
-    primary_account = ForeignKeyField(
-        PeeweePrimaryAccount,
-        backref=DB_DISCORD_ACCOUNT_BACKREF,
-    )
-    
-    account_id = TextField(primary_key=True)
-    account_name = TextField()
-    
-    class Meta:
-        table_name = DB_DISCORD_ACCOUNT_TABLE_NAME
-
-
-class PeeweeMordhauAccount(PeeweeBaseModel):
-    primary_account = ForeignKeyField(
-        PeeweePrimaryAccount,
-        backref=DB_MORDHAU_ACCOUNT_BACKREF,
-    )
-    
-    account_id = TextField(primary_key=True)
-    account_name = TextField()
-    
-    class Meta:
-        table_name = DB_MORDHAU_ACCOUNT_TABLE_NAME
-
-
-AVAILABLE_TABLES = [
-    PeeweePrimaryAccount, PeeweeDiscordAccount, PeeweeMordhauAccount
-]
-
+#####################
+# Special Functions # ---------------------------------------------------------
+#####################
 
 async def account_type_to_peewee_model(
     account_type: PlatformAccountType
@@ -77,10 +24,17 @@ async def account_type_to_peewee_model(
 
 
 def load_tables_to_database():
-    for table_model in AVAILABLE_TABLES:
+    database_connection.initialize(SqliteDatabase(DB_SQLITE_ACCOUNT_SERVICE))
+
+    for table_model in AVAILABLE_ACCOUNT_SERVICE_TABLES:
         if not database_connection.table_exists(table_model):
             database_connection.create_tables([table_model])
             database_connection.commit()
+
+
+#########################
+# Get Account Functions # -----------------------------------------------------
+#########################
 
 
 async def get_platform_account(
@@ -137,6 +91,11 @@ async def get_primary_account(
                 return platform_account.primary_account
 
 
+############################
+# Create Account Functions # --------------------------------------------------
+############################
+
+
 async def create_platform_account(
     primary_account: PeeweePrimaryAccount, 
     account_id: int | str,
@@ -182,10 +141,11 @@ async def create_primary_account(
     )
     
     await create_platform_account(
+        primary_account=primary_account,
+    
         account_id=account_id,
         account_type=account_type,
-        
-        primary_account=primary_account,
+    
         account_name=platform_account_name
     )
     
