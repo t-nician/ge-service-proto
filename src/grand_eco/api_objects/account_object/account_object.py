@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 
-
-from shared.variables import *
+from grand_eco.api_objects.account_object.account_object_variable import *
 
 
 class PrimaryAccountObject(BaseModel):
@@ -14,7 +13,7 @@ class MordhauAccountObject(BaseModel):
     
     account_id: str 
     account_name: str | None = Field(
-        default=DB_ACCOUNT_NAME_MISSING_REPLACEMENT
+        default=ACCOUNT_NAME_MISSING_PLACEMENT
     )
     
     account_type: PlatformAccountType = Field(
@@ -27,10 +26,9 @@ class DiscordAccountObject(BaseModel):
     
     account_id: str 
     account_name: str | None = Field(
-        default=DB_ACCOUNT_NAME_MISSING_REPLACEMENT
+        default=ACCOUNT_NAME_MISSING_PLACEMENT
     )
     
     account_type: PlatformAccountType = Field(
         default=PlatformAccountType.DISCORD_ACCOUNT
     )
-
