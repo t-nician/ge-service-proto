@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from grand_eco.api_objects.account_object.account_object_variable import *
+from grand_eco.api_objects.object_variable import *
 
 
 class PrimaryAccountObject(BaseModel):

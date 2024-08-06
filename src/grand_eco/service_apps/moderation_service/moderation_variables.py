@@ -1,1 +1,0 @@
-DB_SQLITE_MODERATION_SERVICE = "./workspace/moderation-service.sqlite"

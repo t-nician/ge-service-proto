@@ -1,17 +1,19 @@
 from peewee import (
-    ForeignKeyField, TextField, IntegerField, TimestampField
+    ForeignKeyField, TextField, IntegerField, TimestampField, BooleanField
 )
 
 
 from grand_eco.database_models.account_model import *
-from grand_eco.database_models.moderation_model.moderation_model_variable import *
+from grand_eco.database_models.model_variable import *
 
 
 class PeeweeModerationHistory(PeeweeBaseModel):
-    account_id = TextField(primary_key=True)
-    account_type = AccountTypeField()
+    primary_account_id = TextField(primary_key=True)
     
-    history_id = TextField()
+    active_warn_count = IntegerField()
+    total_warn_count = IntegerField()
+    
+    active_ban = BooleanField
     
     class Meta:
         table_name = DB_MODERATION_HISTORY_TABLE_NAME

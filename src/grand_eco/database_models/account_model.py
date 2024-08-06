@@ -1,11 +1,11 @@
 from peewee import (
     Proxy, Model, 
-    ForeignKeyField, TextField, Field
+    ForeignKeyField, TextField, Field, IntegerField, AutoField
 )
 
 
-from grand_eco.api_objects.account_object.account_object_variable import *
-from grand_eco.database_models.account_model.account_model_variable import *
+from grand_eco.api_objects.object_variable import *
+from grand_eco.database_models.model_variable import *
 
 
 database_connection = Proxy()
@@ -27,7 +27,7 @@ class PeeweeBaseModel(Model):
 
 
 class PeeweePrimaryAccount(PeeweeBaseModel):
-    authority_account_id = TextField(primary_key=True)
+    authority_account_id = TextField()
     authority_account_type = AccountTypeField()
     
     class Meta:
