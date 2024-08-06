@@ -1,12 +1,9 @@
 from peewee import (
-    Proxy, Model, 
-    ForeignKeyField, TextField, Field, IntegerField, TimestampField
+    ForeignKeyField, TextField, IntegerField, TimestampField
 )
 
 
-from grand_eco.api_objects.account_object.account_object_variable import *
-
-from grand_eco.database_models.account_model.account_model import *
+from grand_eco.database_models.account_model import *
 from grand_eco.database_models.moderation_model.moderation_model_variable import *
 
 
