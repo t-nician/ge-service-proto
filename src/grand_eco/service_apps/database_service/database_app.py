@@ -26,6 +26,7 @@ async def api_create_primary_account(
     )
     
     return PrimaryAccountObject(
+        id=primary_account_model.id,
         authority_account_id=primary_account_model.authority_account_id,
         authority_account_type=primary_account_model.authority_account_type
     )
@@ -51,6 +52,7 @@ async def api_create_platform_account(
     
     return platform_account_class(
         primary_account=PrimaryAccountObject(
+            id=platform_account.primary_account.id,
             authority_account_id=platform_account_model.primary_account.authority_account_id,
             authority_account_type=platform_account_model.primary_account.authority_account_type
         ),
@@ -71,6 +73,7 @@ async def api_get_primary_account(
     )
     
     return PrimaryAccountObject(
+        id=primary_account.id,
         authority_account_id=primary_account.authority_account_id,
         authority_account_type=primary_account.authority_account_type
     )
@@ -88,6 +91,7 @@ async def api_get_platform_account(
     primary_account: PeeweePrimaryAccount = platform_account.primary_account
     
     primary_account_object = PrimaryAccountObject(
+        id=primary_account.id,
         authority_account_id=primary_account.authority_account_id,
         authority_account_type=primary_account.authority_account_type
     )

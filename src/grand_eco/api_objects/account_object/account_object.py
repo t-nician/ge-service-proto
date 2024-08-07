@@ -4,6 +4,7 @@ from grand_eco.api_objects.object_variable import *
 
 
 class PrimaryAccountObject(BaseModel):
+    id: int
     authority_account_id: str
     authority_account_type: PlatformAccountType
 

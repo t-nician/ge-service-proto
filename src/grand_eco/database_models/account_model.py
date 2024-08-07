@@ -63,3 +63,7 @@ class PeeweeMordhauAccount(PeeweeBaseModel):
 AVAILABLE_ACCOUNT_SERVICE_TABLES = [
     PeeweePrimaryAccount, PeeweeDiscordAccount, PeeweeMordhauAccount
 ]
+
+AVAILABLE_PLATFORM_ACCOUNT_TABLES = [
+    PeeweeDiscordAccount, PeeweeMordhauAccount
+]

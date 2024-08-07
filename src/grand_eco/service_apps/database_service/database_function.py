@@ -80,7 +80,7 @@ async def get_primary_account(
         except DoesNotExist:
             pass
     
-        account_id = str(account_id)
+    account_id = str(account_id)
     
     try:
         primary_account: PeeweePrimaryAccount = PeeweePrimaryAccount.get(
@@ -104,6 +104,14 @@ async def get_primary_account(
             
             if platform_account:
                 return platform_account.primary_account
+        else:
+            for platform_model in AVAILABLE_PLATFORM_ACCOUNT_TABLES:
+                try:
+                    return platform_model.get(
+                        platform_model.account_id==account_id
+                    ).primary_account
+                except DoesNotExist:
+                    pass
 
 
 ############################
